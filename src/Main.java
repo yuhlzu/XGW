@@ -23,8 +23,13 @@ public class Main {
             "safedog-flow-item=; ASP.NET_SessionId=s5uvidfgpanjo0tdoqsrrtzv; YangHua=E84AF1365B39D0A3C8B623043B12913BD0880527AB836438294EAB8BA72CBFF30B05762A2A9B4217E808A2CF21BC6EB4E10A4AF2EE997D8EE405BD11409662DBA8EE225414E1B4ADC5BE310726C726BF3B738EFB47CDEF78106453D3818ABF4C6E82F247D790228D92B72DC9A414555B0949927E1076CCE96F13411BF8D0C39F937F2353763623957D19DADF11AD3616AC43F2B2BE008292B8AE5E104600D33E49F7BD48";
     int Max_Grade = 2018;
     int Min_Grade = 2015;
-    static List<String> QNum = new ArrayList<>();
-    private static String[] Q_titles={"题目标号", "1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17"};
+    static int QNum = 17;
+    static String ABCD[] = {"A","B","C","D","E","F"};
+
+
+    static List<String> ErrorData = new ArrayList<>();
+    static List<String> ErrorData1 = new ArrayList<>();
+    static List<String> ErrorData2 = new ArrayList<>();
 
     private static String[] GradeAll = {"2015","2016","2017","2018"};
     private static String[] CollegeNoAll = {
@@ -166,26 +171,54 @@ public class Main {
 //
 //        PostXGWDCWJ(CollegeNoAll[0],GradeAll[0],"32");
 
-        for (int i = 0; i < CollegeNoAll.length; i++){
+        for (int i = 0; i < 5; i++){
             for (int j = 0; j < GradeAll.length; j++){
 
-                try
-                {
-                    Thread.sleep(8000);
-                }
-                catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
-
                 PostXGWDCWJ(i,j,"32");
+
             }
         }
+//        for (int i = 0; i < CollegeNoAll.length; i++){
+//            for (int j = 0; j < GradeAll.length; j++){
+//
+//                PostXGWDCWJ(i,j,"32");
+//            }
+//        }
+
+        System.out.println("========*******因网络错误的数据重新请求,共"+ErrorData.size()+"个*******===========");
+
+        ErrorData1 = ErrorData;
+        ErrorData.clear();
+
+        FindAll(ErrorData1);
+
+        ErrorData2 = ErrorData;
+        ErrorData.clear();
+
+        FindAll(ErrorData2);
+
 
 
     }
 
+    private static void FindAll(List<String > Data){
+        for (String aData : Data) {
+            try {
+                int m = Integer.valueOf(aData.split(",")[0]);
+                int n = Integer.valueOf(aData.split(",")[1]);
+
+                PostXGWDCWJ(m, n, "32");
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
+    }
+
     private static void PostXGWDCWJ(int ii,int jj,String id){
+
+
         String CollegeNo = CollegeNoAll[ii];
         String Grade = GradeAll[jj];
         System.out.println(CollegeAll[ii]+GradeAll[jj]);
@@ -197,6 +230,14 @@ public class Main {
 //231
 
         String url = "http://xgb.lzu.edu.cn/SystemForm/OnLine/VoteReport.aspx?Id="+id+"&Form=OnLineTopic.aspx";
+
+
+        try {
+            Thread.sleep(8000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
         OkHttpClient okHttpClient = new OkHttpClient
                 .Builder()
@@ -258,6 +299,7 @@ public class Main {
             public void onFailure( Call call,  IOException e) {
                 System.out.println("info_call2fail\n"+e.toString());
                 System.out.println(CollegeAll[ii]+GradeAll[jj]+"========数据请求错误：");
+                ErrorData.add(ii  + "," + jj);
 
             }
 
@@ -312,6 +354,7 @@ public class Main {
                     String QTitle = Content.get(i - 1).text();
 //                System.out.println("\n"+QTitle);
 
+
                     for (int j = 0; j < Q.size(); j++) {
 
                         try {
@@ -329,6 +372,12 @@ public class Main {
 
 //                    System.out.println(QItem.split(" ")[0] + "  " + QItemPeopleNum);
                     }
+
+                    if (Q.size()==3){
+                        aa[3] = aa[3] + 0 + ",";
+                    }
+
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -358,7 +407,6 @@ public class Main {
         private static void CreateExcel(String file_name,int Sheet,String[] QPeopleNum,String ALLPeopleNum)
                 throws IOException, WriteException {
 
-            String Question[] = {"A","B","C","D","E","F"};
             //1:创建excel文件
 
             String path = "D:/"+file_name+".xls";
@@ -383,24 +431,35 @@ public class Main {
 
             }
 
-            //2:创建工作簿
 
             //3:创建sheet,设置第二三四..个sheet，依次类推即可
-            WritableSheet sheet = workbook.createSheet(GradeAll[Sheet]+ALLPeopleNum+"人", Sheet);
+            WritableSheet sheet = workbook.createSheet(GradeAll[Sheet]+ "级" + ALLPeopleNum+"人", Sheet);
             //4：设置titles
             //5:单元格
-            Label label=null;
+            Label label;
             //6:给第一列设置列名
-            for(int i=0; i<Q_titles.length; i++){
+            List<String> Q_titles= new ArrayList<>();
+
+            Q_titles.add("学院");
+            Q_titles.add("年级");
+            Q_titles.add("答题人数");
+
+            for(int i=0; i < QNum; i++) {
+                for (int j = 0; j < 4; j++){
+                    Q_titles.add((i+1)+ABCD[j]);
+                }
+            }
+
+            for(int i=0; i<Q_titles.size(); i++){
                 //x,y,第一行的列名
-                label=new Label(0, i, Q_titles[i]);
+                label=new Label(i, 0, Q_titles.get(i));
                 //7：添加单元格
                 sheet.addCell(label);
             }
             //导入数据
             for(int i = 0; i < QPeopleNum.length; i++){
                 //添加编号，
-                label=new Label(i+1, 0, Question[i]);
+                label=new Label(i+1, 0, ABCD[i]);
                 sheet.addCell(label);
                 System.out.println(QPeopleNum[i]);
 
@@ -419,6 +478,8 @@ public class Main {
 
             workbook.close();
         }
+
+
 
 
 }
