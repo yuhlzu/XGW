@@ -2,10 +2,6 @@ import java.util.List;
 
 public class DataItem {
 
-    String College;
-    String Gradle;
-    String People;
-    List<Que> queList;
 
     public String getCollege() {
         return College;
@@ -31,13 +27,20 @@ public class DataItem {
         People = people;
     }
 
-    public List<Que> getQueList() {
-        return queList;
+    public List<String> getQue() {
+        return Que;
     }
 
-    public void setQueList(List<Que> queList) {
-        this.queList = queList;
+    public void setQue(List<String> que) {
+        Que = que;
     }
+
+    String College;
+    String Gradle;
+    String People;
+    List<String> Que;
+
+
 
 
 }
