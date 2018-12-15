@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="commons-codec-1.11">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/commons-codec-1.11.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/commons-lang3-3.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/gson-2.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/javax.mail.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jsoup-1.11.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/okhttp-3.9.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/okio-1.14.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
